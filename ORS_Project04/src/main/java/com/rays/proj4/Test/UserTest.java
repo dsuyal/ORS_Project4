@@ -30,15 +30,15 @@ public class UserTest {
 		//testSearch();
 		// getRoleid();
 		// getList();
-		//authenticate();
+		authenticate();
 	}
 
 	private static void authenticate() {
 		try {
 			UserBean bean = new UserBean();
 			UserModel model = new UserModel();
-			bean.setLogin("roshani@gmail.com");
-			bean.setPassword("Roshani@123");
+			bean.setLogin("dinesh@gmail.com");
+			bean.setPassword("dinesh@123");
 			bean = model.authenticate(bean.getLogin(), bean.getPassword());
 			if (bean != null) {
 				System.out.println("Successfully login");

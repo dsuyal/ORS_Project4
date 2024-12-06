@@ -172,13 +172,16 @@ public class UserListCtl extends BaseCtl {
 			ServletUtility.redirect(ORSView.USER_LIST_CTL, request, response);
 			return;
 		} else if (OP_DELETE.equalsIgnoreCase(op)) {
+			System.out.println("op delete mila");
 			pageNo = 1;
 			if (ids != null && ids.length > 0) {
 				UserBean deletebean = new UserBean();
+				System.out.println("delete bean ka obj banaya");
 				for (String id : ids) {
 					deletebean.setId(DataUtility.getInt(id));
 					try {
 						model.delete(deletebean);
+						System.out.println("model ki delete");
 					} catch (ApplicationException e) {
 						log.error(e);
 						ServletUtility.handleException(e, request, response);
@@ -186,6 +189,7 @@ public class UserListCtl extends BaseCtl {
 					}
 
 					ServletUtility.setSuccessMessage("User is Deleted Successfully", request);
+					System.out.println("msg set kiya");
 				}
 			} else {
 				ServletUtility.setErrorMessage("Select at least one record", request);

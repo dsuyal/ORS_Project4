@@ -202,6 +202,14 @@ public class DataValidator {
 						}	
 	    		}
 	 
+	 public static boolean isTooLong(String val, int maxLength) {
+		    if (isNotNull(val)) {
+		        return val.length() > maxLength;
+		    } else {
+		        return false;
+		    }
+		}
+	 
 	
 	public static void main(String[] args) {
 		System.out.println("Not Null 2"+isNotNull("ABC"));

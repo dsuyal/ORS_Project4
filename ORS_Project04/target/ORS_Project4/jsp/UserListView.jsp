@@ -83,6 +83,11 @@
 					value="<%=ServletUtility.getParameter("firstName", request)%>">
 
 						<label></font> </label> <%-- <%=HTMLUtility.getList("roleid", String.valueOf(bean.getRoleId()), rlist) %> --%>
+						
+					<%-- 	<label>LastName</font> :
+						
+						</label> <input type="text" name="LastName" placeholder="Enter last name"
+						value="<%=ServletUtility.getParameter("LastName", request)%>">--%>
 
 						<label>LoginId</font> :
 

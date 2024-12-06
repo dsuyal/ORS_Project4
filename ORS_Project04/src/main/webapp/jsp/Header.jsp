@@ -22,7 +22,7 @@
     
     
 	%>
-
+ 
 <table >
     <tr ><th></th>
        <td width="90%" >
@@ -91,6 +91,16 @@
         <a href="<%=ORSView.FACULTY_LIST_CTL %>">Faculty List</b></a> |
         <a href="<%=ORSView.TIMETABLE_CTL %>" >Add TimeTable</b></a> |       
         <a href="<%=ORSView.TIMETABLE_LIST_CTL %>">TimeTable List</b></a> |
+     	<a href="<%=ORSView.VEHICLE_CTL%>">Add Vehicle</b></a>| 
+        <a href="<%=ORSView.VEHICLE_LIST_CTL%>">Vehicle List</b></a>|
+    	<a href="<%=ORSView.ORDER_CTL%>"> Add Order </b></a>  | 
+    	<a href="<%=ORSView.ORDER_LIST_CTL%>"> Order List</b></a> |  
+        <a href="<%=ORSView.CUSTOMER_CTL%>"> Add Customer </b></a>  | 
+    	<a href="<%=ORSView.CUSTOMER_LIST_CTL%>"> Customer List</b></a> | 
+    	 <a href="<%=ORSView.STOCK_CTL%>"> Add Stock </b></a>  | 
+    	<a href="<%=ORSView.STOCK_LIST_CTL%>"> Stock List</b></a> |
+    	 <a href="<%=ORSView.PORTFOLIO_CTL%>"> Add Portfolio </b></a>  | 
+    	<a href="<%=ORSView.PORTFOLIO_LIST_CTL%>"> Portfolio List</b></a> |
         <a target="blank" href="<%=ORSView.JAVA_DOC_VIEW%>">Java Doc</b></a> |
        <%
      		}

@@ -45,6 +45,24 @@ public interface ORSView {
 		 public String TIMETABLE_VIEW = PAGE_FOLDER + "/TimeTableView.jsp";
 		 public String TIMETABLE_LIST_VIEW = PAGE_FOLDER + "/TimeTableListView.jsp";
 		 public String ERROR_VIEW = PAGE_FOLDER + "/ErrorView.jsp";
+		 
+		 
+		public String VEHICLE_VIEW = PAGE_FOLDER + "/VehicleView.jsp";
+		public String VEHICLE_LIST_VIEW =  PAGE_FOLDER + "/VehicleListView.jsp";
+		 
+		public String ORDER_VIEW = PAGE_FOLDER + "/OrderView.jsp";
+		public String ORDER_LIST_VIEW = PAGE_FOLDER + "/OrderListView.jsp";
+		
+		public String CUSTOMER_VIEW = PAGE_FOLDER + "/CustomerView.jsp";
+		public String CUSTOMER_LIST_VIEW = PAGE_FOLDER + "/CustomerListView.jsp";
+		
+		
+		public String STOCK_VIEW = PAGE_FOLDER + "/StockView.jsp";
+		public String STOCK_LIST_VIEW = PAGE_FOLDER + "/StockListView.jsp";
+		
+		public String PORTFOLIO_VIEW = PAGE_FOLDER + "/PortfolioView.jsp";
+		public String PORTFOLIO_LIST_VIEW = PAGE_FOLDER + "/PortfolioListView.jsp";
+		
 		 //   public String ERROR_VIEW5 = PAGE_FOLDER + "/ErrorView5.jsp";
 		    
 
@@ -79,4 +97,19 @@ public interface ORSView {
 	    public String TIMETABLE_LIST_CTL = APP_CONTEXT + "/ctl/TimeTableListCtl";
 	    public String ERROR_CTL = APP_CONTEXT + "/ErrorCtl";
 	
+
+		public String VEHICLE_CTL = APP_CONTEXT + "/ctl/VehicleCtl";
+		public String VEHICLE_LIST_CTL = APP_CONTEXT + "/ctl/VehicleListCtl";
+		
+		public String ORDER_CTL = APP_CONTEXT + "/ctl/OrderCtl";
+		public String  ORDER_LIST_CTL = APP_CONTEXT + "/ctl/OrderListCtl";
+		
+		public String CUSTOMER_CTL = APP_CONTEXT + "/ctl/CustomerCtl";
+		public String CUSTOMER_LIST_CTL = APP_CONTEXT + "/ctl/CustomerListCtl";
+		
+		public String STOCK_CTL = APP_CONTEXT + "/ctl/StockCtl";
+		public String STOCK_LIST_CTL = APP_CONTEXT + "/ctl/StockListCtl";
+		
+		public String PORTFOLIO_CTL = APP_CONTEXT + "/ctl/PortfolioCtl";
+		public String PORTFOLIO_LIST_CTL = APP_CONTEXT + "/ctl/PortfolioListCtl";
 }

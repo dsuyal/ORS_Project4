@@ -224,5 +224,4 @@ import com.rays.pro4.Util.ServletUtility;
 		return ORSView.USER_REGISTRATION_VIEW;
 
 	}
-
 }

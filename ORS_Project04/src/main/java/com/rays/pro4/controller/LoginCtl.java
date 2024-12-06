@@ -1,4 +1,4 @@
-package com.rays.pro4.controller;
+ package com.rays.pro4.controller;
 
 import java.io.IOException;
 
@@ -160,9 +160,11 @@ public class LoginCtl extends BaseCtl {
  
 					if ("null".equalsIgnoreCase(uri)) {
 						ServletUtility.redirect(ORSView.WELCOME_CTL, request, response);
+						System.out.println("rahulgour");
 						return;
 					} else {
 						ServletUtility.redirect(uri, request, response);
+						System.out.println("rahul2");
 						return;
 					} 
 
@@ -170,6 +172,7 @@ public class LoginCtl extends BaseCtl {
 					System.out.println(" Loginctl Ki Do post 22");
 					bean = (UserBean) populateBean(request);
 					ServletUtility.setBean(bean, request);
+					System.out.println("rahul3");
 					ServletUtility.setErrorMessage("Invalid LoginId And Password", request);
 				}
 
