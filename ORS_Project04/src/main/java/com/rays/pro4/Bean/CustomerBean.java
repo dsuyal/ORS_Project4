@@ -5,9 +5,10 @@ import java.util.Date;
 public class CustomerBean extends BaseBean {
 	
 	private String name;
-	private Date dateOfBirth;
+	private String location;
 	private String phoneNumber;
-	private int gender;
+	private int importance;
+	
 	
 	public String getName() {
 		return name;
@@ -15,11 +16,11 @@ public class CustomerBean extends BaseBean {
 	public void setName(String name) {
 		this.name = name;
 	}
-	public Date getDateOfBirth() {
-		return dateOfBirth;
+	public String getLocation() {
+		return location;
 	}
-	public void setDateOfBirth(Date dateOfBirth) {
-		this.dateOfBirth = dateOfBirth;
+	public void setLocation(String location) {
+		this.location = location;
 	}
 	public String getPhoneNumber() {
 		return phoneNumber;
@@ -27,22 +28,23 @@ public class CustomerBean extends BaseBean {
 	public void setPhoneNumber(String phoneNumber) {
 		this.phoneNumber = phoneNumber;
 	}
-	public int getGender() {
-		return gender;
+	public int getImportance() {
+		return importance;
 	}
-	public void setGender(int gender) {
-		this.gender = gender;
+	public void setImportance(int importance) {
+		this.importance = importance;
 	}
 	@Override
 	public String getkey() {
 		// TODO Auto-generated method stub
-		return null;
+		return id+"";
 	}
 	@Override
 	public String getValue() {
 		// TODO Auto-generated method stub
-		return null;
+		return location+"";
 	}
+	
 	
 	
 
