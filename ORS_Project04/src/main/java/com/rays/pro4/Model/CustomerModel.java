@@ -41,7 +41,8 @@ public class CustomerModel {
 
 	public long add(CustomerBean bean) throws ApplicationException, DuplicateRecordException {
 
-		String sql = "INSERT INTO st_customer VALUES(?,?,?,?,?)";
+		String sql = "insert into st_customer values(?,?,?,?,?)";
+
 
 		Connection conn = null;
 		int pk = 0;
@@ -55,9 +56,9 @@ public class CustomerModel {
 
 			pstmt.setInt(1, pk);
 			pstmt.setString(2, bean.getName());
-			pstmt.setDate(3, new java.sql.Date(bean.getDateOfBirth().getTime()));
+			pstmt.setString(3, bean.getLocation());
 			pstmt.setString(4, bean.getPhoneNumber());
-			pstmt.setInt(5, bean.getGender());
+			pstmt.setInt(5, bean.getImportance());
 
 			int a = pstmt.executeUpdate();
 			System.out.println("ho gyua re" + a);
@@ -114,7 +115,7 @@ public class CustomerModel {
 
 	public void update(CustomerBean bean) throws ApplicationException, DuplicateRecordException {
 
-		String sql = "UPDATE st_customer SET NAME=?,DATE_OF_BIRTH=?,PHONE_NUMBER=?,GENDER=? WHERE ID=?";
+		String sql = "UPDATE st_customer SET NAME=?,LOCATION=?,PHONE_NUMBER=?,IMPORTANCE=? WHERE ID=?";
 		Connection conn = null;
 
 		try {
@@ -122,9 +123,9 @@ public class CustomerModel {
 			conn.setAutoCommit(false);
 			PreparedStatement pstmt = conn.prepareStatement(sql);
 			pstmt.setString(1, bean.getName());
-			pstmt.setDate(2, new java.sql.Date(bean.getDateOfBirth().getTime()));
+			pstmt.setString(2, bean.getLocation());
 			pstmt.setString(3, bean.getPhoneNumber());
-			pstmt.setInt(4, bean.getGender());
+			pstmt.setInt(4, bean.getImportance());
 			pstmt.setLong(5, bean.getId());
 
 			pstmt.executeUpdate();
@@ -153,65 +154,67 @@ public class CustomerModel {
 
 	public List search(CustomerBean bean, int pageNo, int pageSize) throws ApplicationException {
 
-		StringBuffer sql = new StringBuffer("SELECT *FROM st_customer WHERE 1=1");
-		if (bean != null) {
-			if (bean != null && bean.getId() > 0) {
+	    StringBuffer sql = new StringBuffer("SELECT * FROM st_customer WHERE 1=1");
 
-				sql.append(" AND id = " + bean.getId());
+	    if (bean != null) {
 
-			}
-			if (bean.getName() != null && bean.getName().length() > 0) {
-				sql.append(" AND NAME like '" + bean.getName() + "%'");
-			}
-			if (bean.getDateOfBirth() != null && bean.getDateOfBirth().getTime() > 0) {
-				Date d = new Date(bean.getDateOfBirth().getDate());
-				sql.append(" AND DATE_OF_BIRTH like '" + new java.sql.Date(bean.getDateOfBirth().getTime()) + "%'");
-			}
-			if (bean.getPhoneNumber().length() > 0) {
-				sql.append(" AND PHONE_NUMBER = " + bean.getPhoneNumber());
-			}
+	        if (bean.getId() > 0) {
+	            sql.append(" AND ID = " + bean.getId());
+	        }
 
-			if (bean.getGender() != 0 && bean.getGender() > 0) {
-				sql.append(" AND GENDER like '" + bean.getGender() + "%'");
-			}
+	        if (bean.getName() != null && bean.getName().length() > 0) {
+	            sql.append(" AND NAME LIKE '" + bean.getName() + "%'");
+	        }
 
-			if (pageSize > 0) {
 
-				pageNo = (pageNo - 1) * pageSize;
+	        if (bean.getLocation() != null && bean.getLocation().length() > 0) {
+	            sql.append(" AND LOCATION LIKE '" + bean.getLocation() + "%'");
+	        }
 
-				sql.append(" Limit " + pageNo + ", " + pageSize);
+	        if (bean.getPhoneNumber() != null && bean.getPhoneNumber().length() > 0) {
+	            sql.append(" AND PHONE_NUMBER = '" + bean.getPhoneNumber() + "'");
+	        }
 
-			}
-		}
-		System.out.println("sql>>>>>>>>>> " + sql.toString());
+	        if (bean.getImportance() > 0) {
+	            sql.append(" AND IMPORTANCE = " + bean.getImportance());
+	        }
 
-		List list = new ArrayList();
-		Connection conn = null;
-		try {
-			conn = JDBCDataSource.getConnection();
-			PreparedStatement pstmt = conn.prepareStatement(sql.toString());
-			ResultSet rs = pstmt.executeQuery();
-			while (rs.next()) {
-				bean = new CustomerBean();
-				bean.setId(rs.getLong(1));
-				bean.setName(rs.getString(2));
-				bean.setDateOfBirth(rs.getDate(3));
-				bean.setPhoneNumber(rs.getString(4));
-				bean.setGender(rs.getInt(5));
+	        if (pageSize > 0) {
+	            pageNo = (pageNo - 1) * pageSize;
+	            sql.append(" LIMIT " + pageNo + ", " + pageSize);
+	        }
+	    }
 
-				list.add(bean);
+	    System.out.println("SQL >>>>>>> " + sql.toString());
 
-			}
-			rs.close();
-		} catch (Exception e) {
+	    List list = new ArrayList();
+	    Connection conn = null;
 
-			throw new ApplicationException("Exception: Exception in Search customer");
-		} finally {
-			JDBCDataSource.closeConnection(conn);
-		}
+	    try {
+	        conn = JDBCDataSource.getConnection();
+	        PreparedStatement pstmt = conn.prepareStatement(sql.toString());
+	        ResultSet rs = pstmt.executeQuery();
 
-		return list;
+	        while (rs.next()) {
+	            CustomerBean cb = new CustomerBean(); // Do NOT reuse input 'bean'
+	            cb.setId(rs.getLong(1));
+	            cb.setName(rs.getString(2));
+	            cb.setLocation(rs.getString(3));
+	            cb.setPhoneNumber(rs.getString(4));
+	            cb.setImportance(rs.getInt(5));
+	            list.add(cb);
+	        }
 
+	        rs.close();
+	        pstmt.close();
+
+	    } catch (Exception e) {
+	        throw new ApplicationException("Exception: Exception in Search customer");
+	    } finally {
+	        JDBCDataSource.closeConnection(conn);
+	    }
+
+	    return list;
 	}
 
 	public CustomerBean findByPK(long pk) throws ApplicationException {
@@ -228,16 +231,16 @@ public class CustomerModel {
 				bean = new CustomerBean();
 				bean.setId(rs.getLong(1));
 				bean.setName(rs.getString(2));
-				bean.setDateOfBirth(rs.getDate(3));
+				bean.setLocation(rs.getString(3));
 				bean.setPhoneNumber(rs.getString(4));
-				bean.setGender(rs.getInt(5));
+				bean.setImportance(rs.getInt(5));
 
 			}
 			rs.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 
-			throw new ApplicationException("Exception : Exception in getting Payment by pk");
+			throw new ApplicationException("Exception : Exception in getting customer by pk");
 		} finally {
 			JDBCDataSource.closeConnection(conn);
 		}
@@ -269,9 +272,9 @@ public class CustomerModel {
 				CustomerBean bean = new CustomerBean();
 				bean.setId(rs.getLong(1));
 				bean.setName(rs.getString(2));
-				bean.setDateOfBirth(rs.getDate(3));
+				bean.setLocation(rs.getString(3));
 				bean.setPhoneNumber(rs.getString(4));
-				bean.setGender(rs.getInt(5));
+				bean.setImportance(rs.getInt(5));
 
 				list.add(bean);
 

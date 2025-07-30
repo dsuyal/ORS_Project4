@@ -1,7 +1,5 @@
 package com.rays.pro4.Bean;
 
-import java.util.Date;
-
 public class CustomerBean extends BaseBean {
 	
 	private String name;

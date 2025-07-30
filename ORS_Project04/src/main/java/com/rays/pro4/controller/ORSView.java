@@ -63,6 +63,24 @@ public interface ORSView {
 		public String PORTFOLIO_VIEW = PAGE_FOLDER + "/PortfolioView.jsp";
 		public String PORTFOLIO_LIST_VIEW = PAGE_FOLDER + "/PortfolioListView.jsp";
 		
+		public String STOCKANALYSIS_VIEW = PAGE_FOLDER + "/StockAnalysisView.jsp";
+		public String STOCKANALYSIS_LIST_VIEW = PAGE_FOLDER + "/StockAnalysisListView.jsp";
+		
+		public String TRADEHISTORY_VIEW = PAGE_FOLDER + "/TradeHistoryView.jsp";
+		public String TRADEHISTORY_LIST_VIEW = PAGE_FOLDER + "/TradeHistoryListView.jsp";
+		
+
+		
+		public String TRANSPORTATION_VIEW = PAGE_FOLDER + "/TransportationView.jsp"; 
+		public String TRANSPORTATION_LIST_VIEW = PAGE_FOLDER + "/TransportationListView.jsp";
+		
+		public String ITEM_VIEW = PAGE_FOLDER + "/ItemView.jsp"; 
+		public String ITEM_LIST_VIEW = PAGE_FOLDER + "/ItemListView.jsp";
+		
+
+		
+		
+		
 		 //   public String ERROR_VIEW5 = PAGE_FOLDER + "/ErrorView5.jsp";
 		    
 
@@ -107,9 +125,15 @@ public interface ORSView {
 		public String CUSTOMER_CTL = APP_CONTEXT + "/ctl/CustomerCtl";
 		public String CUSTOMER_LIST_CTL = APP_CONTEXT + "/ctl/CustomerListCtl";
 		
-		public String STOCK_CTL = APP_CONTEXT + "/ctl/StockCtl";
-		public String STOCK_LIST_CTL = APP_CONTEXT + "/ctl/StockListCtl";
+		public String TRADEHISTORY_CTL = APP_CONTEXT + "/ctl/TradeHistoryCtl";
+		public String TRADEHISTORY_LIST_CTL = APP_CONTEXT + "/ctl/TradeHistoryListCtl";
 		
-		public String PORTFOLIO_CTL = APP_CONTEXT + "/ctl/PortfolioCtl";
-		public String PORTFOLIO_LIST_CTL = APP_CONTEXT + "/ctl/PortfolioListCtl";
+		public String TRANSPORTATION_CTL = APP_CONTEXT + "/ctl/TransportationCtl";
+		public String TRANSPORTATION_LIST_CTL = APP_CONTEXT + "/ctl/TransportationListCtl";
+		
+
+		public String ITEM_CTL = APP_CONTEXT + "/ctl/ItemCtl";
+		public String ITEM_LIST_CTL = APP_CONTEXT + "/ctl/ItemListCtl";
+		
+		
 }

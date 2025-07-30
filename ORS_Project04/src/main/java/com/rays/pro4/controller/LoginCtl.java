@@ -160,11 +160,11 @@ public class LoginCtl extends BaseCtl {
  
 					if ("null".equalsIgnoreCase(uri)) {
 						ServletUtility.redirect(ORSView.WELCOME_CTL, request, response);
-						System.out.println("rahulgour");
+						System.out.println("dinesh");
 						return;
 					} else {
 						ServletUtility.redirect(uri, request, response);
-						System.out.println("rahul2");
+						System.out.println("dinesh2");
 						return;
 					} 
 
@@ -172,7 +172,7 @@ public class LoginCtl extends BaseCtl {
 					System.out.println(" Loginctl Ki Do post 22");
 					bean = (UserBean) populateBean(request);
 					ServletUtility.setBean(bean, request);
-					System.out.println("rahul3");
+					System.out.println("dinesh3");
 					ServletUtility.setErrorMessage("Invalid LoginId And Password", request);
 				}
 

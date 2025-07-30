@@ -5,7 +5,7 @@ import java.util.Date;
 public class VehicleBean extends BaseBean {
 
 	private String number;
-	private java.util.Date purchaseDate;
+	private Date purchaseDate;
 	private String insuranceAmount;
 	private String colour;
 	

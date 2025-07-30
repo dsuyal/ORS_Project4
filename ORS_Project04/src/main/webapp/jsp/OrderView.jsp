@@ -19,6 +19,8 @@
 <link rel="stylesheet" href="/resources/demos/style.css">
 <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<%-- <script src="<%=request.getContextPath()%>/js/Utilities.js"></script> --%>
+
 <script>
 	$(function() {
 		$("#udatee").datepicker({
@@ -27,11 +29,33 @@
 			yearRange : '1980:2002',
 		});
 	});
-	function limitInputLength(input, maxLength) {
+	/* function limitInputLength(input, maxLength) {
 		if (input.value.length > maxLength) {
 			input.value = input.value.slice(0, maxLength);
 		}
-	}
+	} */
+</script>
+<script>
+function handleAlphabetInput(inputElementId, errorElementId, maxLength) {
+    const inputElement = document.getElementById(inputElementId);
+    const errorMessage = document.getElementById(errorElementId);
+    const currentValue = inputElement.value;
+
+    if (/[^a-zA-Z]/.test(currentValue)) {
+        errorMessage.textContent = 'Only alphabets are allowed.';
+        inputElement.value = currentValue.replace(/[^a-zA-Z]/g, '');
+    } else {
+        if (currentValue.length > maxLength) {
+            errorMessage.textContent = `Only ${maxLength} characters are allowed.`;
+            inputElement.value = currentValue.slice(0, maxLength);
+        } else {
+            errorMessage.textContent = '';
+        }
+    }
+
+    // Enforce max length again
+    inputElement.value = inputElement.value.slice(0, maxLength);
+}
 </script>
 <body>
 	<jsp:useBean id="bean" class="com.rays.pro4.Bean.OrderBean"
@@ -77,13 +101,18 @@
 						:
 					</th>
 					<td><input type="text" name="ProductName"
-						placeholder="Enter ProductName" size="25"
-						value="<%=DataUtility.getStringData(bean.getProductName())%>"></td>
-					<td style="position: fixed"><font color="red"><%=ServletUtility.getErrorMessage("ProductName", request)%></font></td>
+						placeholder="Enter ProductName" size="25" id="ProductNameInput"
+						oninput="handleAlphabetInput('ProductNameInput', 'ProductNameError', 10)"
+						onblur="handleAlphabetInput('ProductNameInput', 'ProductNameError', 10)"
+						value="<%=DataUtility.getStringData(bean.getProductName()).equals('0') ? "": DataUtility.getStringData(bean.getProductName())%>">
+					
+						<br> <span id="ProductNameError" style="color: red;"></span>
+					</td>
 
-				</tr>
 
-				<tr>
+
+
+					<tr>
 					<th style="padding: 1px"></th>
 				</tr>
 				<tr>

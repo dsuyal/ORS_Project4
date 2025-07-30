@@ -14,7 +14,7 @@
 <link rel="icon" type="image/png"
 	href="<%=ORSView.APP_CONTEXT%>/img/logo.png" sizes="16*16" />
 
-<title>patient List</title>
+<title>vehicle List</title>
 <link rel="stylesheet"
 	href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 
@@ -31,6 +31,7 @@
 			changeMonth : true,
 			changeYear : true,
 			yearRange : '1980:2024',
+			dateFormat:'yy-mm-dd'
 		//  mindefaultDate : "01-01-1962"
 		});
 	});
@@ -82,17 +83,17 @@
 						placeholder="Enter number"
 						value="<%=ServletUtility.getParameter("number", request)%>">
 						
-					 <td align="center"><label>Purchase Date</font> :
-					</label> <input type="text" name="purchaseDate"
-						placeholder="Enter date of Purchase" readonly="readonly" id="udate"
-						value="<%=ServletUtility.getParameter("purchaseDate", request)%>">
+					 <td align="center"><label>Purchase Date</font> :</label>
+					 <input type="text" name="purchaseDate"
+					 placeholder="Enter date of Purchase" readonly="readonly" id="udate"
+					 value="<%=ServletUtility.getParameter("purchaseDate", request)%>">
 
-						 <td align="center"><label>Insurance Amount  </font> :
-					</label> <input type="text" name="insuranceAmount"
-						placeholder="Enter insurance amount"
-						value="<%=ServletUtility.getParameter("insuranceAmount", request)%>">
+					 <td align="center"><label>Insurance Amount  </font> :</label>
+					 <input type="text" name="insuranceAmount"
+					 placeholder="Enter insurance amount"
+					 value="<%=ServletUtility.getParameter("insuranceAmount", request)%>">
 						
-						 &emsp; <label>Colour</font> : </label>
+					 &emsp; <label>Colour</font> : </label>
 						 
 						 						<%
 							HashMap map = new HashMap();

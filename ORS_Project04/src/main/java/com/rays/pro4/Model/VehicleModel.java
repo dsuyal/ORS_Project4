@@ -168,18 +168,23 @@ public class VehicleModel {
 	public List search(VehicleBean bean, int pageNo, int pageSize) throws ApplicationException {
 		// log.debug("Model Search Start");
 		System.out.println("model Search Start--------------");
+		
 		StringBuffer sql = new StringBuffer("SELECT * FROM st_vehicle WHERE 1=1");
+		
 		System.out.println(bean + "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+		
+		
 		if (bean != null) {
 			
-			System.out.println(bean.getNumber());
+			System.out.println("inside bean");
 			
 			if (bean.getNumber() != null && bean.getNumber().length() > 0) {
 				sql.append(" AND Number like '" + bean.getNumber() + "%'");
 			}
 			
 			if (bean.getPurchaseDate() != null && bean.getPurchaseDate().getTime() > 0) {
-				sql.append(" AND PurchaseDate like '" + bean.getPurchaseDate().getTime() + "%'");
+				Date d = new Date(bean.getPurchaseDate().getDate());
+				sql.append(" AND purchaseDate like '" + new java.sql.Date(bean.getPurchaseDate().getTime()) + "%'");
 			}
 
 			if (bean.getInsuranceAmount() != null && bean.getInsuranceAmount().length() > 0) {

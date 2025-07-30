@@ -91,16 +91,26 @@
         <a href="<%=ORSView.FACULTY_LIST_CTL %>">Faculty List</b></a> |
         <a href="<%=ORSView.TIMETABLE_CTL %>" >Add TimeTable</b></a> |       
         <a href="<%=ORSView.TIMETABLE_LIST_CTL %>">TimeTable List</b></a> |
-     	<a href="<%=ORSView.VEHICLE_CTL%>">Add Vehicle</b></a>| 
+        
+     <%-- 	<a href="<%=ORSView.VEHICLE_CTL%>">Add Vehicle</b></a>| 
         <a href="<%=ORSView.VEHICLE_LIST_CTL%>">Vehicle List</b></a>|
+        
     	<a href="<%=ORSView.ORDER_CTL%>"> Add Order </b></a>  | 
-    	<a href="<%=ORSView.ORDER_LIST_CTL%>"> Order List</b></a> |  
-        <a href="<%=ORSView.CUSTOMER_CTL%>"> Add Customer </b></a>  | 
-    	<a href="<%=ORSView.CUSTOMER_LIST_CTL%>"> Customer List</b></a> | 
-    	 <a href="<%=ORSView.STOCK_CTL%>"> Add Stock </b></a>  | 
-    	<a href="<%=ORSView.STOCK_LIST_CTL%>"> Stock List</b></a> |
-    	 <a href="<%=ORSView.PORTFOLIO_CTL%>"> Add Portfolio </b></a>  | 
-    	<a href="<%=ORSView.PORTFOLIO_LIST_CTL%>"> Portfolio List</b></a> |
+    	<a href="<%=ORSView.ORDER_LIST_CTL%>"> Order List</b></a> |   --%>
+    	
+    	<a href="<%=ORSView.CUSTOMER_CTL%>"> Add Customer </b></a>  | 
+    	<a href="<%=ORSView.CUSTOMER_LIST_CTL%>"> Customer List</b></a> |
+    	
+    	<%-- <a href="<%=ORSView.TRADEHISTORY_CTL%>"> Add Trade History </b></a>  | 
+    	<a href="<%=ORSView.TRADEHISTORY_LIST_CTL%>"> Trade History List</b></a> |
+    	
+    	<a href="<%=ORSView.TRANSPORTATION_CTL%>"> Add Transportation </b></a>  | 
+    	<a href="<%=ORSView.TRANSPORTATION_LIST_CTL%>"> Transportation List</b></a> |
+    	
+    	
+		<a href="<%=ORSView.ITEM_CTL%>">Add Item</b></a> | 
+		<a href="<%=ORSView.ITEM_LIST_CTL%>">Item List</b></a> |  --%>
+    	
         <a target="blank" href="<%=ORSView.JAVA_DOC_VIEW%>">Java Doc</b></a> |
        <%
      		}

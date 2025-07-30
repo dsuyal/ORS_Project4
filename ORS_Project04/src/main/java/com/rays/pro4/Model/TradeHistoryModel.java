@@ -7,17 +7,18 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
-import com.rays.pro4.Bean.OrderBean;
+
+import com.rays.pro4.Bean.TradeHistoryBean;
 import com.rays.pro4.Exception.ApplicationException;
 import com.rays.pro4.Exception.DatabaseException;
 import com.rays.pro4.Exception.DuplicateRecordException;
 import com.rays.pro4.Util.JDBCDataSource;
 
-public class OrderModel {
+public class TradeHistoryModel{
 
 	public int nextPK() throws DatabaseException {
 
-		String sql = "SELECT MAX(ID) FROM st_order";
+		String sql = "SELECT MAX(ID) FROM st_tradehistory";
 		Connection conn = null;
 		int pk = 0;
 		try {
@@ -39,9 +40,9 @@ public class OrderModel {
 
 	}
 
-	public long add(OrderBean bean) throws ApplicationException, DuplicateRecordException {
+	public long add(TradeHistoryBean bean) throws ApplicationException, DuplicateRecordException {
 
-		String sql = "INSERT INTO st_order VALUES(?,?,?,?,?)";
+		String sql = "INSERT INTO st_tradehistory VALUES(?,?,?,?,?)";
 
 		Connection conn = null;
 		int pk = 0;
@@ -54,10 +55,10 @@ public class OrderModel {
 			PreparedStatement pstmt = conn.prepareStatement(sql);
 
 			pstmt.setInt(1, pk);
-			pstmt.setString(2, bean.getProductName());
-			pstmt.setDate(3, new java.sql.Date(bean.getDob().getTime()));
-			pstmt.setLong(4, bean.getQuantity());
-			pstmt.setString(5, bean.getCustomer());
+			pstmt.setString(2, bean.getUserId());
+			pstmt.setDate(3, new java.sql.Date(bean.getStartDate().getTime()));
+			pstmt.setDate(4, new java.sql.Date(bean.getEndDate().getTime()));
+			pstmt.setString(5, bean.getTransactionType());
 
 			int a = pstmt.executeUpdate();
 			System.out.println("ho gyua re" + a);
@@ -85,9 +86,9 @@ public class OrderModel {
 
 	}
 
-	public void delete(OrderBean bean) throws ApplicationException {
+	public void delete(TradeHistoryBean bean) throws ApplicationException {
 
-		String sql = "DELETE FROM st_order WHERE ID=?";
+		String sql = "DELETE FROM st_tradehistory WHERE ID=?";
 		Connection conn = null;
 		try {
 			conn = JDBCDataSource.getConnection();
@@ -112,20 +113,22 @@ public class OrderModel {
 
 	}
 
-	public void update(OrderBean bean) throws ApplicationException, DuplicateRecordException {
+	public void update(TradeHistoryBean bean) throws ApplicationException, DuplicateRecordException {
 
-		String sql = "UPDATE st_order SET PRODUCT_NAME=?,DOB=?,QUANTITY=?,CUSTOMER=? WHERE ID=?";
+		String sql = "UPDATE st_tradehistory SET USERID=?, STARTDATE=?, ENDDATE=?, TRANSACTIONTYPE=? WHERE ID=?";
 		Connection conn = null;
 
 		try {
 			conn = JDBCDataSource.getConnection();
 			conn.setAutoCommit(false);
 			PreparedStatement pstmt = conn.prepareStatement(sql);
-			pstmt.setString(1, bean.getProductName());
-			pstmt.setDate(2, new java.sql.Date(bean.getDob().getTime()));
-			pstmt.setLong(3, bean.getQuantity());
-			pstmt.setString(4, bean.getCustomer());
-			pstmt.setLong(5, bean.getId());
+			
+			
+			pstmt.setString(1, bean.getUserId());
+			pstmt.setDate(2, new java.sql.Date(bean.getStartDate().getTime()));
+			pstmt.setDate(3, new java.sql.Date(bean.getEndDate().getTime()));
+			pstmt.setString(4, bean.getTransactionType());
+            pstmt.setLong(5, bean.getId());
 
 			pstmt.executeUpdate();
 			int i = pstmt.executeUpdate();
@@ -147,35 +150,41 @@ public class OrderModel {
 	}
 
 	/*
-	 * public List search(OrderBean bean) throws ApplicationException { return
+	 * public List search(TradeHistoryBean bean) throws ApplicationException { return
 	 * search(bean); }
 	 */
 
-	public List search(OrderBean bean, int pageNo, int pageSize) throws ApplicationException {
+	public List search(TradeHistoryBean bean, int pageNo, int pageSize) throws ApplicationException {
 
-		StringBuffer sql = new StringBuffer("SELECT *FROM st_order WHERE 1=1");
+		StringBuffer sql = new StringBuffer("SELECT * FROM st_tradehistory WHERE 1=1");
 		if (bean != null) {
 			if (bean != null && bean.getId() > 0) {
 
 				sql.append(" AND id = " + bean.getId());
 
 			}
-			if (bean.getProductName()!= null && bean.getProductName().length() > 0) {
-				sql.append(" AND PRODUCT_NAME like '" + bean.getProductName() + "%'");
+			if (bean.getUserId() != null && bean.getUserId().length() > 0) {
+				sql.append(" AND USERID like '" + bean.getUserId() + "%'");
+			}
+			if (bean.getStartDate() != null && bean.getStartDate().getTime() > 0) {
+				Date d = new Date(bean.getStartDate().getDate());
+				sql.append(" AND STARTDATE like '" + new java.sql.Date(bean.getStartDate().getTime()) + "%'");
+			}
+			if (bean.getEndDate() != null && bean.getEndDate().getTime() > 0) {
+				Date d = new Date(bean.getEndDate().getDate());
+				sql.append(" AND ENDDATE like '" + new java.sql.Date(bean.getEndDate().getTime()) + "%'");
 			}
 			
-			if (bean.getDob() != null && bean.getDob().getTime() > 0) {
-				Date d = new Date(bean.getDob().getDate());
-				sql.append(" AND Dob like '" + new java.sql.Date(bean.getDob().getTime()) + "%'");
-			}
-			if (bean.getQuantity() > 0) {
-				sql.append(" AND Quantity = " + bean.getQuantity());
-			}
-
-			if (bean.getCustomer() != null && bean.getCustomer().length() > 0) {
-				sql.append(" AND Customer like '" + bean.getCustomer() + "%'");
-			}
-
+			
+			/*
+			 * if (bean.getTransactionType() != null && bean.getTransactionType().length() >
+			 * 0) sql.append(" AND TRANSACTIONTYPE = '" + bean.getTransactionType() + "'");
+			 */
+				
+			  
+			  
+			 
+			 
 			if (pageSize > 0) {
 
 				pageNo = (pageNo - 1) * pageSize;
@@ -193,12 +202,12 @@ public class OrderModel {
 			PreparedStatement pstmt = conn.prepareStatement(sql.toString());
 			ResultSet rs = pstmt.executeQuery();
 			while (rs.next()) {
-				bean = new OrderBean();
+				bean = new TradeHistoryBean();
 				bean.setId(rs.getLong(1));
-				bean.setProductName(rs.getString(2));
-				bean.setDob(rs.getDate(3));
-				bean.setQuantity(rs.getLong(4));
-				bean.setCustomer(rs.getString(5));
+				bean.setUserId(rs.getString(2));
+				bean.setStartDate(rs.getDate(3));
+				bean.setEndDate(rs.getDate(4));
+				bean.setTransactionType(rs.getString(5));
 
 				list.add(bean);
 
@@ -215,10 +224,10 @@ public class OrderModel {
 
 	}
 
-	public OrderBean findByPK(long pk) throws ApplicationException {
+	public TradeHistoryBean findByPK(long pk) throws ApplicationException {
 
-		String sql = "SELECT * FROM st_order WHERE ID=?";
-		OrderBean bean = null;
+		String sql = "SELECT * FROM st_tradehistory WHERE ID=?";
+		TradeHistoryBean bean = null;
 		Connection conn = null;
 		try {
 			conn = JDBCDataSource.getConnection();
@@ -226,12 +235,13 @@ public class OrderModel {
 			pstmt.setLong(1, pk);
 			ResultSet rs = pstmt.executeQuery();
 			while (rs.next()) {
-				bean = new OrderBean();
+				bean = new TradeHistoryBean();
+				
 				bean.setId(rs.getLong(1));
-				bean.setProductName(rs.getString(2));
-				bean.setDob(rs.getDate(3));
-				bean.setQuantity(rs.getLong(4));
-				bean.setCustomer(rs.getString(5));
+				bean.setUserId(rs.getString(2));
+				bean.setStartDate(rs.getDate(3));
+				bean.setEndDate(rs.getDate(4));
+				bean.setTransactionType(rs.getString(5));
 
 			}
 			rs.close();
@@ -253,7 +263,7 @@ public class OrderModel {
 	public List list(int pageNo, int pageSize) throws ApplicationException {
 
 		ArrayList list = new ArrayList();
-		StringBuffer sql = new StringBuffer("select * from st_order");
+		StringBuffer sql = new StringBuffer("select * from st_tradehistory");
 
 		if (pageSize > 0) {
 			pageNo = (pageNo - 1) * pageSize;
@@ -267,13 +277,13 @@ public class OrderModel {
 			PreparedStatement pstmt = conn.prepareStatement(sql.toString());
 			ResultSet rs = pstmt.executeQuery();
 			while (rs.next()) {
-				OrderBean bean = new OrderBean();
+				TradeHistoryBean bean = new TradeHistoryBean();
+				
 				bean.setId(rs.getLong(1));
-				bean.setProductName(rs.getString(2));
-				bean.setDob(rs.getDate(3));
-				bean.setQuantity(rs.getLong(4));
-				bean.setCustomer(rs.getString(5));
-
+				bean.setUserId(rs.getString(2));
+				bean.setStartDate(rs.getDate(3));
+				bean.setEndDate(rs.getDate(4));
+				bean.setTransactionType(rs.getString(5));
 				list.add(bean);
 
 			}

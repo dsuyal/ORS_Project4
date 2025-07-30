@@ -210,6 +210,7 @@ public class DataValidator {
 		    }
 		}
 	 
+	 
 	
 	public static void main(String[] args) {
 		System.out.println("Not Null 2"+isNotNull("ABC"));
@@ -221,6 +222,19 @@ public class DataValidator {
 		System.out.println("Is int"+isInteger("ABC1"));
 		System.out.println("Is Int"+isInteger("123"));
 		System.out.println("is Int"+isNotNull("123"));
+	}
+	
+	public static boolean isFloat(String val) {
+		if (isNotNull(val)) {
+			try {
+				float i = Float.parseFloat(val);
+				return true;
+			} catch (NumberFormatException e) {
+				return false;
+			}
+		} else {
+			return false;
+		}
 	}
 	
 }

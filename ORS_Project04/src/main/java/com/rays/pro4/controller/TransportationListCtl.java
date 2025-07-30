@@ -1,73 +1,95 @@
+
 package com.rays.pro4.controller;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.sound.midi.Soundbank;
 
+import org.apache.log4j.Logger;
 
 import com.rays.pro4.Bean.BaseBean;
-import com.rays.pro4.Bean.OrderBean;
+import com.rays.pro4.Bean.TransportationBean;
 import com.rays.pro4.Exception.ApplicationException;
-import com.rays.pro4.Model.OrderModel;
+import com.rays.pro4.Model.CustomerModel;
+import com.rays.pro4.Model.TransportationModel;
 import com.rays.pro4.Util.DataUtility;
 import com.rays.pro4.Util.PropertyReader;
 import com.rays.pro4.Util.ServletUtility;
 
-@WebServlet(name = "OrderListCtl", urlPatterns = { "/ctl/OrderListCtl" })
-public class OrderListCtl extends BaseCtl {
+@WebServlet(name = "TransportationListCtl", urlPatterns = { "/ctl/TransportationListCtl" })
+public class TransportationListCtl extends BaseCtl {
+
+	private static Logger log = Logger.getLogger(TransportationListCtl.class);
+
+
+
 	@Override
 	protected void preload(HttpServletRequest request) {
-		OrderModel model = new OrderModel();
 
-		HashMap map = new HashMap();
-		map.put("Mr.Amitabh", "Mr.Amitabh");
-		map.put("Miss.jaya", "Miss.jaya");
-		map.put("Mr.Govinda", "Mr.Govinda");
-		map.put("Mr.rajnikant", "Mr.rajnikant");
-		map.put("Mr.Mahesh", "Mr.Mahesh");
+		TransportationModel tmodel = new TransportationModel();
 
-		request.setAttribute("prolist", map);
+		try {
+
+			List tlist = tmodel.list(0, 0);
+
+			request.setAttribute("Discription", tlist);
+
+		} catch (ApplicationException e) {
+			e.printStackTrace();
+		}
+
+		TransportationModel model = new TransportationModel();
+		Map<Integer, String> map = new HashMap();
+
+		map.put(1, "Airway");
+		map.put(2, "Railway");
+		map.put(3, "Road");
+
+		request.setAttribute("cate", map);
+
 	}
 
 	@Override
-	protected BaseBean populateBean(HttpServletRequest request) {         
-
-		OrderBean bean = new OrderBean();
+	protected BaseBean populateBean(HttpServletRequest request) {
+		TransportationBean bean = new TransportationBean();
 
 		bean.setId(DataUtility.getLong(request.getParameter("id")));
-		bean.setProductName(DataUtility.getString(request.getParameter("ProductName")));
-		bean.setDob(DataUtility.getDate(request.getParameter("Dob")));
 
-		System.out.println("quantity ===== > " + request.getParameter("Quantity"));
+		bean.setDiscription(DataUtility.getString(request.getParameter("discription")));
 
-		bean.setQuantity(DataUtility.getLong(request.getParameter("Quantity")));
+		bean.setMode(DataUtility.getInt(request.getParameter("mode")));
 
-		System.out.println("quantity bean ===== > " + bean.getQuantity());
+		System.out.println("dateeesss" + request.getParameter("date"));
 
-		bean.setCustomer(DataUtility.getString(request.getParameter("Customer")));
+		bean.setDate(DataUtility.getDate(request.getParameter("date")));
+		
+		System.out.println("date" + bean.getDate());
+
+		bean.setCost(DataUtility.getLong(request.getParameter("cost")));
 
 		return bean;
 	}
 
-	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-
+		log.debug("TransportationListCtl doGet Start");
 		List list = null;
 		List nextList = null;
 
 		int pageNo = 1;
 		int pageSize = DataUtility.getInt(PropertyReader.getValue("page.size"));
-		OrderBean bean = (OrderBean) populateBean(request);
-		String op = DataUtility.getString(request.getParameter("operation"));
-		System.out.println(">>>>>>>>>>>>>>>helooo" + bean.getDob());
 
-		OrderModel model = new OrderModel();
+		TransportationBean bean = (TransportationBean) populateBean(request);
+		String op = DataUtility.getString(request.getParameter("operation"));
+
+		TransportationModel model = new TransportationModel();
 
 		try {
 			list = model.search(bean, pageNo, pageSize);
@@ -77,24 +99,27 @@ public class OrderListCtl extends BaseCtl {
 
 			request.setAttribute("nextlist", nextList.size());
 
+			if (list == null || list.size() == 0) {
+				ServletUtility.setErrorMessage("No record found ", request);
+			}
+
 			ServletUtility.setList(list, request);
 			ServletUtility.setPageNo(pageNo, request);
 			ServletUtility.setPageSize(pageSize, request);
-			// ServletUtility.setBean(bean, request);
+			ServletUtility.forward(getView(), request, response);
 
 		} catch (ApplicationException e) {
-
+			log.error(e);
 			ServletUtility.handleException(e, request, response);
 			return;
 		}
-
-		ServletUtility.forward(getView(), request, response);
+		log.debug("TransportationListCtl doGet End");
 	}
 
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		System.out.println("PaymentListCtl doPost Start");
+		log.debug("TransportationListCtl doPost Start");
 
 		List list;
 		List nextList = null;
@@ -105,42 +130,40 @@ public class OrderListCtl extends BaseCtl {
 		pageSize = (pageSize == 0) ? DataUtility.getInt(PropertyReader.getValue("page.size")) : pageSize;
 
 		String op = DataUtility.getString(request.getParameter("operation"));
-		
-		OrderBean bean = (OrderBean) populateBean(request);
-
+		TransportationBean bean = (TransportationBean) populateBean(request);
+		// get the selected checkbox ids array for delete list
 		String[] ids = request.getParameterValues("ids");
-		OrderModel model = new OrderModel();
+
+		TransportationModel model = new TransportationModel();
 
 		if (OP_SEARCH.equalsIgnoreCase(op)) {
 			pageNo = 1;
+			
 		} else if (OP_NEXT.equalsIgnoreCase(op)) {
 			pageNo++;
 		} else if (OP_PREVIOUS.equalsIgnoreCase(op) && pageNo > 1) {
 			pageNo--;
-
 		} else if (OP_NEW.equalsIgnoreCase(op)) {
-
-			ServletUtility.redirect(ORSView.ORDER_CTL, request, response);
+			ServletUtility.redirect(ORSView.TRANSPORTATION_CTL, request, response);
 			return;
 		} else if (OP_RESET.equalsIgnoreCase(op)) {
-			ServletUtility.redirect(ORSView.ORDER_LIST_CTL, request, response);
+			ServletUtility.redirect(ORSView.TRANSPORTATION_LIST_CTL, request, response);
 			return;
-
 		} else if (OP_DELETE.equalsIgnoreCase(op)) {
 			pageNo = 1;
 			if (ids != null && ids.length > 0) {
-				OrderBean deletebean = new OrderBean();
+				TransportationBean deletebean = new TransportationBean();
 				for (String id : ids) {
 					deletebean.setId(DataUtility.getInt(id));
 					try {
 						model.delete(deletebean);
 					} catch (ApplicationException e) {
-
+						log.error(e);
 						ServletUtility.handleException(e, request, response);
 						return;
 					}
 
-					ServletUtility.setSuccessMessage("Order is Deleted Successfully", request);
+					ServletUtility.setSuccessMessage("Transportation is Deleted Successfully", request);
 				}
 			} else {
 				ServletUtility.setErrorMessage("Select at least one record", request);
@@ -155,7 +178,7 @@ public class OrderListCtl extends BaseCtl {
 			request.setAttribute("nextlist", nextList.size());
 
 		} catch (ApplicationException e) {
-
+			log.error(e);
 			ServletUtility.handleException(e, request, response);
 			return;
 		}
@@ -166,14 +189,14 @@ public class OrderListCtl extends BaseCtl {
 		ServletUtility.setBean(bean, request);
 		ServletUtility.setPageNo(pageNo, request);
 		ServletUtility.setPageSize(pageSize, request);
-
 		ServletUtility.forward(getView(), request, response);
+		log.debug("TransportationListCtl doGet End");
 
 	}
 
 	@Override
 	protected String getView() {
-		return ORSView.ORDER_LIST_VIEW;
+		return ORSView.TRANSPORTATION_LIST_VIEW;
 	}
 
 }

@@ -1,6 +1,7 @@
 <%@page import="com.rays.pro4.controller.CustomerCtl"%>
 <%@page import="com.rays.pro4.Util.HTMLUtility"%>
 <%@page import="java.util.HashMap"%>
+<%@page import="java.util.Map"%>
 <%@page import="com.rays.pro4.Util.DataUtility"%>
 <%@page import="com.rays.pro4.Util.ServletUtility"%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
@@ -19,19 +20,37 @@
 <link rel="stylesheet" href="/resources/demos/style.css">
 <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script src="<%=request.getContextPath()%>/js/Utilities.js"></script>
 <script>
 	$(function() {
 		$("#udatee").datepicker({
 			changeMonth : true,
 			changeYear : true,
-			yearRange : '1980:2002',
+			yearRange : '2000:2025',
 		});
 	});
-	function limitInputLength(input, maxLength) {
-		if (input.value.length > maxLength) {
-			input.value = input.value.slice(0, maxLength);
-		}
-	}
+	
+</script>
+
+<script>
+function validatePhoneNumber(input, errorId, maxLength) {
+    let value = input.value;
+
+    // Remove all non-digit characters
+    let cleaned = value.replace(/\D/g, '');
+
+    if (value !== cleaned) {
+        document.getElementById(errorId).textContent = "Only numeric values allowed";
+    } else if (cleaned.length > maxLength) {
+        document.getElementById(errorId).textContent = "Maximum " + maxLength + " digits allowed";
+    } else {
+        document.getElementById(errorId).textContent = "";
+    }
+
+    // Apply the cleaned value
+    input.value = cleaned.slice(0, maxLength);
+}
+
 </script>
 <body>
 	<jsp:useBean id="bean" class="com.rays.pro4.Bean.CustomerBean"
@@ -66,6 +85,11 @@
 					<font color="red"> <%=ServletUtility.getErrorMessage(request)%></font>
 					<font color="green"> <%=ServletUtility.getSuccessMessage(request)%></font>
 				</h3>
+				
+				
+			<%
+   					 Map<Integer, String> map = (Map<Integer, String>) request.getAttribute("issue");
+				%>
 
 			</div>
 
@@ -76,10 +100,13 @@
 					<th align="left">Name <span style="color: red">*</span>
 						:
 					</th>
-					<td><input type="text" name="name"
-						placeholder="Enter Name" size="25"
-						value="<%=DataUtility.getStringData(bean.getName())%>"></td>
-					<td style="position: fixed"><font color="red"><%=ServletUtility.getErrorMessage("name", request)%></font></td>
+					<td><input type="text" name="name" placeholder="Enter name"
+						size="25" id="nameInput"
+						oninput="handleAlphabetInput('nameInput', 'nameError', 20)"
+						onblur="handleAlphabetInput('nameInput', 'nameError', 20)"
+						value="<%=DataUtility.getStringData(bean.getName()).equals('0') ? "" : DataUtility.getStringData(bean.getName())%>">
+					
+					<td style="position: fixed"><font color="red"id="nameError"><%=ServletUtility.getErrorMessage("name", request)%></font></td>
 
 				</tr>
 
@@ -87,45 +114,43 @@
 					<th style="padding: 1px"></th>
 				</tr>
 				<tr>
-					<th align="left">Date Of Birth <span style="color: red">*</span>
+					<th align="left">Location <span style="color: red">*</span>
 						:
 					</th>
-					<td><input type="text" name="dateOfBirth"
-						placeholder="Enter Order Date " size="25" id="udatee"
-						readonly="readonly"
-						value="<%=DataUtility.getDateString(bean.getDateOfBirth())%>"></td>
-					<td style="position: fixed;"><font color="red"> <%=ServletUtility.getErrorMessage("dateOfBirth", request)%></font></td>
+					<td><input type="text" name="location" placeholder="Enter location"
+						size="25" id="locationInput"
+						oninput="handleAlphabetInput('locationInput', 'locationError', 20)"
+						onblur="handleAlphabetInput('locationInput', 'locationError', 20)"
+						value="<%=DataUtility.getStringData(bean.getName()).equals('0') ? "" : DataUtility.getStringData(bean.getName())%>">
+					
+					<td style="position: fixed;"><font color="red"id="locationError"> <%=ServletUtility.getErrorMessage("location", request)%></font></td>
 				</tr>
 				<tr>
 					<th style="padding: 1px"></th>
 				</tr>
 				<tr>
-					<th align="left">Phone Number<span style="color: red">*</span> :
+					<th align="left">Phone Number<span style="color: red">*</span>
+						:
 					</th>
-					<td><input type="number" name="phoneNumber" 
-						placeholder="Enter Phone Number" style="width: 198px"
-						value="<%=DataUtility.getStringData(bean.getPhoneNumber())%>"
-						oninput="limitInputLength(this, 15)"></td>
-					<td style="position: fixed"><font color="red"> <%=ServletUtility.getErrorMessage("phoneNumber", request)%></font></td>
-				</tr>
-				<tr>
-					<th style="padding: 1px"></th>
+					<td><input type="text" name="phoneNumber"
+						placeholder="Enter Phone Number" size="27" style="width: 206px"
+						oninput="validatePhoneNumber(this, 'phoneError', 10)"
+						value="<%=DataUtility.getStringData(bean.getPhoneNumber())%>">
+					</td>
+					<td><font color="red" id="phoneError"> <%=ServletUtility.getErrorMessage("phoneNumber", request)%>
+					</font></td>
 				</tr>
 
+
 				<tr>
-					<th align="left">Gender<span style="color: red">*</span> :
+					<th align="left">Importance<span style="color: red">*</span> :
 					</th>
 					<td>
 						<%
-							HashMap map = new HashMap();
-							map.put("Male", "Male");
-							map.put("Female", "Female");
-							
-
-							String hlist = HTMLUtility.getList("gender", String.valueOf(bean.getGender()), map);
+							String hlist = HTMLUtility.getList2("importance", DataUtility.getStringData(bean.getImportance()), map);
 						%> <%=hlist%>
 					</td>
-					<td style="position: fixed"><font color="red"> <%=ServletUtility.getErrorMessage("gender", request)%></font></td>
+					<td style="position: fixed"><font color="red"> <%=ServletUtility.getErrorMessage("importance", request)%></font></td>
 				</tr>
 				<tr>
 					<th style="padding: 1px"></th>
@@ -137,7 +162,8 @@
 						if (bean.getId() > 0) {
 					%>
 					<td colspan="2">&nbsp; &emsp; <input type="submit"
-						name="operation" value="<%=CustomerCtl.OP_UPDATE%>"> &nbsp;
+						name="operation" value="<%=CustomerCtl.OP_UPDATE%>"> 
+						&nbsp;
 						&nbsp; <input type="submit" name="operation"
 						value="<%=CustomerCtl.OP_CANCEL%>"></td>
 

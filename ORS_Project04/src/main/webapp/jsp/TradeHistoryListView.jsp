@@ -1,18 +1,19 @@
-<%@page import="com.rays.pro4.controller.OrderListCtl"%>
+<%@page import="java.util.Map"%>
+<%@page import="com.rays.pro4.controller.TradeHistoryListCtl"%>
 <%@page import="com.rays.pro4.Util.HTMLUtility"%>
-<%@page import="com.rays.pro4.Bean.OrderBean"%>
+<%@page import="com.rays.pro4.Bean.TradeHistoryBean"%>
 <%@page import="java.util.Iterator"%>
 <%@page import="java.util.List"%>
 <%@page import="com.rays.pro4.Util.DataUtility"%>
 <%@page import="java.util.HashMap"%>
 <%@page import="com.rays.pro4.Util.ServletUtility"%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-    pageEncoding="ISO-8859-1"%>
+	pageEncoding="ISO-8859-1"%>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="ISO-8859-1">
-<title>Order page</title>
+<title>TradeHistory page</title>
 <script src="<%=ORSView.APP_CONTEXT%>/js/jquery.min.js"></script>
 <script src="<%=ORSView.APP_CONTEXT%>/js/Checkbox11.js"></script>
 
@@ -22,15 +23,26 @@
 <link rel="stylesheet" href="/resources/demos/style.css">
 <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script src="<%=ORSView.APP_CONTEXT%>/js/utilities.js"></script>
 <script>
 	$(function() {
 		$("#Udate").datepicker({
 			changeMonth : true,
 			changeYear : true,
-			yearRange : '2000:2025',
-		//dateFormat:'yy-mm-dd'
+			yearRange : '1980:2031',
+			dateFormat:'yy-mm-dd'
 		});
 	});
+
+	$(function() {
+		$("#Udatee").datepicker({
+			changeMonth : true,
+			changeYear : true,
+			yearRange : '1980:2030',
+			dateFormat:'yy-mm-dd'
+		});
+	});
+	
 
 	function limitInputLength(input, maxLength) {
 		if (input.value.length > maxLength) {
@@ -39,14 +51,14 @@
 	}
 </script>
 <body>
-	<jsp:useBean id="bean" class="com.rays.pro4.Bean.OrderBean"
+	<jsp:useBean id="bean" class="com.rays.pro4.Bean.TradeHistoryBean"
 		scope="request"></jsp:useBean>
 	<%@include file="Header.jsp"%>
-	<form action="<%=ORSView.ORDER_LIST_CTL%>" method="post">
+	<form action="<%=ORSView.TRADEHISTORY_LIST_CTL%>" method="post">
 		<center>
 
 			<div align="center">
-				<h1>Order List</h1>
+				<h1>TradeHistory List</h1>
 				<h3>
 					<font color="red"><%=ServletUtility.getErrorMessage(request)%></font>
 					<font color="green"><%=ServletUtility.getSuccessMessage(request)%></font>
@@ -54,7 +66,7 @@
 
 			</div>
 			<%
-				HashMap map = (HashMap) request.getAttribute("prolist");
+				Map map = (Map) request.getAttribute("cat");
 
 				int next = DataUtility.getInt(request.getAttribute("nextlist").toString());
 			%>
@@ -65,49 +77,71 @@
 				int index = ((pageNo - 1) * pageSize) + 1;
 
 				List list = ServletUtility.getList(request);
-				Iterator<OrderBean> it = list.iterator();
+				Iterator<TradeHistoryBean> it = list.iterator();
 				if (list.size() != 0) {
 			%>
 			<table width="100%" align="center">
+				<div>
 
-				<td align="center"><label>ProductName</font> :
-
-				</label> <input type="text" name="ProductName"
-					placeholder="Enter ProductName"
-					value="<%=ServletUtility.getParameter("ProductName", request)%>">
+					  <td align="center"><label>UserId:</label>
+        		
+        		<td><input type="text" name="userId"  placeholder="Enter userId"
+        							value="<%=ServletUtility.getParameter("userId", request)%>">
+        		
+        	
+						
+						<%=DataUtility.getStringData(bean.getUserId())%></td>
+					</div>
+					<td style="position: fixed"><font color="red"><%=ServletUtility.getErrorMessage("userId", request)%></font></td>
+        			<br>
+       				<font color="red" id="userIdError">
+           				 <%=ServletUtility.getErrorMessage("userId", request)%>
+       			</font>
+    			</td>
+				</div>
+				
+                <div>
+				<td align="center"><label>StartDate</font> :</label>
+				   <input type="text" name="startDate" placeholder="Enter startDate" readonly="readonly" id="Udate"
+                            value="<%=ServletUtility.getParameter("startDate", request)%>">
+					</div>
 					
-				<td align="center"><label>Date</font> :
-				</label> <input type="text" name="Dob" id="Udate"
-					placeholder="Enter Date of birth" readonly="readonly"
-					value="<%=ServletUtility.getParameter("Dob", request)%>">
-					
-				<td align="center"><label>Quantity:</label> <input
-					type="text" name="Quantity" id="quantityInput"
-					placeholder="Enter Quantity"
-					value="<%=ServletUtility.getParameter("Quantity", request)%>"
-					oninput="limitInputLength(this, 15)"> <label>Customer</font>
-						:
-				</label> <%=HTMLUtility.getList("Customer", String.valueOf(bean.getCustomer()), map)%>
+					 <div>
+				<td align="center"><label>EndDate</font> :
+				</label>    <input type="text" name="endDate" placeholder="Enter endDate" readonly="readonly" id="Udatee"
+                            value="<%=ServletUtility.getParameter("endDate", request)%>">
+					</div>
 
-					<input type="submit" name="operation"
-					value="<%=OrderListCtl.OP_RESET%>"> <input type="submit"
-					name="operation" value="<%=OrderListCtl.OP_SEARCH%>"></td>
+
+					<div>
+						<td><label>TransactionType</font> :
+						</label> <%=HTMLUtility.getList2("transctionType", String.valueOf(bean.getTransactionType()), map)%></td>
+
+					</div>
+				
+				<td><input type="submit" name="operation"
+					value="<%=TradeHistoryListCtl.OP_SEARCH%>"> 
+					
+					<input type="submit"
+					name="operation" value="<%=TradeHistoryListCtl.OP_RESET%>"></td>
+
+
 			</table>
 			<br>
 
-			<table border="1" width="100%" align="center" cellpadding=6px
+		<table border ="1" width="100%" align="center" cellpadding=6px
 				cellspacing=".2">
 
 
-				<tr style= "background-color: lightblue" >
+				<tr style="background: skyblue">
 					<th><input type="checkbox" id="select_all" name="select">Select
 						All</th>
 
 					<th>S.No.</th>
-					<th>Product Name</th>
-					<th>Order date</th>
-					<th>Quantity</th>
-					<th>Customer</th>
+					<th>UserId </th>
+					<th>StartDate </th>
+					<th>EndDate</th>
+					<th>TransctionType</th>
 					<th>Edit</th>
 				</tr>
 				<%
@@ -119,11 +153,11 @@
 						value="<%=bean.getId()%>"></td>
 
 					<td><%=index++%></td>
-					<td><%=bean.getProductName()%></td>
-					<td><%=bean.getDob()%></td>
-					<td><%=bean.getQuantity()%></td>
-					<td><%=bean.getCustomer()%></td>
-					<td><a href="OrderCtl?id=<%=bean.getId()%>">Edit</td>
+					<td><%=bean.getUserId()%></td>
+					<td><%=bean.getStartDate()%></td>
+					<td><%=bean.getEndDate()%></td>
+					<td><%=bean.getTransactionType()%></td>
+					<td><a href="TradeHistoryCtl?id=<%=bean.getId()%>">Edit</td>
 				</tr>
 				<%
 					}
@@ -137,23 +171,23 @@
 							if (pageNo == 1) {
 						%>
 						<td><input type="submit" name="operation" disabled="disabled"
-							value="<%=OrderListCtl.OP_PREVIOUS%>"></td>
+							value="<%=TradeHistoryListCtl.OP_PREVIOUS%>"></td>
 						<%
 							} else {
 						%>
 						<td><input type="submit" name="operation"
-							value="<%=OrderListCtl.OP_PREVIOUS%>"></td>
+							value="<%=TradeHistoryListCtl.OP_PREVIOUS%>"></td>
 						<%
 							}
 						%>
 
 						<td><input type="submit" name="operation"
-							value="<%=OrderListCtl.OP_DELETE%>"></td>
+							value="<%=TradeHistoryListCtl.OP_DELETE%>"></td>
 						<td align="center"><input type="submit" name="operation"
-							value="<%=OrderListCtl.OP_NEW%>"></td>
+							value="<%=TradeHistoryListCtl.OP_NEW%>"></td>
 
 						<td align="right"><input type="submit" name="operation"
-							value="<%=OrderListCtl.OP_NEXT%>"
+							value="<%=TradeHistoryListCtl.OP_NEXT%>"
 							<%=(list.size() < pageSize || next == 0) ? "disabled" : ""%>></td>
 
 
@@ -165,7 +199,7 @@
 					if (list.size() == 0) {
 				%>
 				<td align="center"><input type="submit" name="operation"
-					value="<%=OrderListCtl.OP_BACK%>"></td>
+					value="<%=TradeHistoryListCtl.OP_BACK%>"></td>
 
 
 				<%
@@ -177,6 +211,7 @@
 
 				</form>
 				</br>
+
 				</br>
 				</br>
 				</br>

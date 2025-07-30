@@ -3,6 +3,7 @@ package com.rays.pro4.controller;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -20,16 +21,36 @@ import com.rays.pro4.Util.ServletUtility;
 
 @WebServlet(name = "CustomerListCtl", urlPatterns = { "/ctl/CustomerListCtl" })
 public class CustomerListCtl extends BaseCtl {
+	
+	
 	@Override
 	protected void preload(HttpServletRequest request) {
-		CustomerModel model = new CustomerModel();
 
-		HashMap map = new HashMap();
-		map.put("Male", "Male");
-		map.put("Female", "Female");
+		CustomerModel smodel = new CustomerModel();
 
-		request.setAttribute("prolist", map);
+		try {
+
+			List slist = smodel.list(0, 0);
+
+			request.setAttribute("isuue", slist);
+
+		} catch (ApplicationException e) {
+			e.printStackTrace();
+		}
+
+
+		Map<Integer, String> map = new HashMap();
+
+		    map.put(1, "High");
+		    map.put(2, "Medium");
+		    map.put(3, "Low");
+		
+
+		request.setAttribute("issue", map);
+		
+
 	}
+
 
 	@Override
 	protected BaseBean populateBean(HttpServletRequest request) {         
@@ -37,16 +58,14 @@ public class CustomerListCtl extends BaseCtl {
 		CustomerBean bean = new CustomerBean();
 
 		bean.setId(DataUtility.getLong(request.getParameter("id")));
-		bean.setName(DataUtility.getString(request.getParameter("Name")));
-		bean.setDateOfBirth(DataUtility.getDate(request.getParameter("Dob")));
 
-		System.out.println("phoneNumber ===== > " + request.getParameter("phoneNumber"));
+		bean.setName(DataUtility.getString(request.getParameter("name")));
+		
+		bean.setLocation(DataUtility.getString(request.getParameter("location")));
+		
+		bean.setPhoneNumber(DataUtility.getString(request.getParameter("phoneNumber")));
 
-		bean.setPhoneNumber(DataUtility.getString(request.getParameter("Quantity")));
-
-		System.out.println("PhoneNumber bean ===== > " + bean.getPhoneNumber());
-
-		bean.setGender(DataUtility.getInt(request.getParameter("Gender")));
+		bean.setImportance(DataUtility.getInt(request.getParameter("importance")));
 
 		return bean;
 	}
@@ -62,8 +81,7 @@ public class CustomerListCtl extends BaseCtl {
 		int pageSize = DataUtility.getInt(PropertyReader.getValue("page.size"));
 		CustomerBean bean = (CustomerBean) populateBean(request);
 		String op = DataUtility.getString(request.getParameter("operation"));
-		System.out.println(">>>>>>>>>>>>>>>helooo" + bean.getDateOfBirth());
-
+		
 		CustomerModel model = new CustomerModel();
 
 		try {
@@ -91,7 +109,7 @@ public class CustomerListCtl extends BaseCtl {
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		System.out.println("PaymentListCtl doPost Start");
+		System.out.println("CustomerListCtl doPost Start");
 
 		List list;
 		List nextList = null;

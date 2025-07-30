@@ -3,71 +3,98 @@ package com.rays.pro4.controller;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Logger;
 
 import com.rays.pro4.Bean.BaseBean;
-import com.rays.pro4.Bean.OrderBean;
+import com.rays.pro4.Bean.ItemBean;
 import com.rays.pro4.Exception.ApplicationException;
-import com.rays.pro4.Model.OrderModel;
+import com.rays.pro4.Model.ItemModel;
 import com.rays.pro4.Util.DataUtility;
 import com.rays.pro4.Util.PropertyReader;
 import com.rays.pro4.Util.ServletUtility;
 
-@WebServlet(name = "OrderListCtl", urlPatterns = { "/ctl/OrderListCtl" })
-public class OrderListCtl extends BaseCtl {
+ 
+@WebServlet(name = "ItemListCtl", urlPatterns = { "/ctl/ItemListCtl" })
+public class ItemListCtl extends BaseCtl {
+
+	private static Logger log = Logger.getLogger(ItemListCtl.class);
+
+
 	@Override
 	protected void preload(HttpServletRequest request) {
-		OrderModel model = new OrderModel();
 
-		HashMap map = new HashMap();
-		map.put("Mr.Amitabh", "Mr.Amitabh");
-		map.put("Miss.jaya", "Miss.jaya");
-		map.put("Mr.Govinda", "Mr.Govinda");
-		map.put("Mr.rajnikant", "Mr.rajnikant");
-		map.put("Mr.Mahesh", "Mr.Mahesh");
+		ItemModel tmodel = new ItemModel();
 
-		request.setAttribute("prolist", map);
+		try {
+
+			List ilist = tmodel.list(0, 0);
+
+			request.setAttribute("Title", ilist);
+
+		} catch (ApplicationException e) {
+			e.printStackTrace();
+		}
+
+		ItemModel model = new ItemModel();
+		Map<Integer, String> map = new HashMap();
+
+		map.put(1, "Appliances");
+		map.put(2, "Furniture");
+		map.put(3, "Lighting");
+		map.put(4, "Clothing");
+
+		request.setAttribute("cate", map);
+
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see in.co.rays.ors.controller.BaseCtl#populateBean(javax.servlet.http.
+	 * HttpServletRequest)
+	 */
 	@Override
-	protected BaseBean populateBean(HttpServletRequest request) {         
+	protected BaseBean populateBean(HttpServletRequest request) {
+		ItemBean bean = new ItemBean();
 
-		OrderBean bean = new OrderBean();
+		bean.setId(DataUtility.getLong(request.getParameter("ids")));
 
-		bean.setId(DataUtility.getLong(request.getParameter("id")));
-		bean.setProductName(DataUtility.getString(request.getParameter("ProductName")));
-		bean.setDob(DataUtility.getDate(request.getParameter("Dob")));
+		bean.setTitle(DataUtility.getString(request.getParameter("title")));
 
-		System.out.println("quantity ===== > " + request.getParameter("Quantity"));
+		bean.setOverView(DataUtility.getString(request.getParameter("overView")));
 
-		bean.setQuantity(DataUtility.getLong(request.getParameter("Quantity")));
+		bean.setCategory(DataUtility.getInt(request.getParameter("category")));
 
-		System.out.println("quantity bean ===== > " + bean.getQuantity());
+		bean.setPurchaseDate(DataUtility.getDate(request.getParameter("purchaseDate")));
 
-		bean.setCustomer(DataUtility.getString(request.getParameter("Customer")));
+		bean.setCost(DataUtility.getLong(request.getParameter("cost")));
 
 		return bean;
 	}
 
-	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-
+		log.debug("ItemListCtl doGet Start");
 		List list = null;
 		List nextList = null;
 
 		int pageNo = 1;
 		int pageSize = DataUtility.getInt(PropertyReader.getValue("page.size"));
-		OrderBean bean = (OrderBean) populateBean(request);
-		String op = DataUtility.getString(request.getParameter("operation"));
-		System.out.println(">>>>>>>>>>>>>>>helooo" + bean.getDob());
 
-		OrderModel model = new OrderModel();
+		ItemBean bean = (ItemBean) populateBean(request);
+		String op = DataUtility.getString(request.getParameter("operation"));
+
+//	        get the selected checkbox ids array for delete list
+
+		// String[] ids = request.getParameterValues("ids");
+		ItemModel model = new ItemModel();
 
 		try {
 			list = model.search(bean, pageNo, pageSize);
@@ -77,24 +104,27 @@ public class OrderListCtl extends BaseCtl {
 
 			request.setAttribute("nextlist", nextList.size());
 
+			if (list == null || list.size() == 0) {
+				ServletUtility.setErrorMessage("No record found ", request);
+			}
+
 			ServletUtility.setList(list, request);
 			ServletUtility.setPageNo(pageNo, request);
 			ServletUtility.setPageSize(pageSize, request);
-			// ServletUtility.setBean(bean, request);
+			ServletUtility.forward(getView(), request, response);
 
 		} catch (ApplicationException e) {
-
+			log.error(e);
 			ServletUtility.handleException(e, request, response);
 			return;
 		}
-
-		ServletUtility.forward(getView(), request, response);
+		log.debug("ItemListCtl doGet End");
 	}
 
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		System.out.println("PaymentListCtl doPost Start");
+		log.debug("ItemListCtl doPost Start");
 
 		List list;
 		List nextList = null;
@@ -105,11 +135,11 @@ public class OrderListCtl extends BaseCtl {
 		pageSize = (pageSize == 0) ? DataUtility.getInt(PropertyReader.getValue("page.size")) : pageSize;
 
 		String op = DataUtility.getString(request.getParameter("operation"));
-		
-		OrderBean bean = (OrderBean) populateBean(request);
-
+		ItemBean bean = (ItemBean) populateBean(request);
+		// get the selected checkbox ids array for delete list
 		String[] ids = request.getParameterValues("ids");
-		OrderModel model = new OrderModel();
+
+		ItemModel model = new ItemModel();
 
 		if (OP_SEARCH.equalsIgnoreCase(op)) {
 			pageNo = 1;
@@ -117,30 +147,27 @@ public class OrderListCtl extends BaseCtl {
 			pageNo++;
 		} else if (OP_PREVIOUS.equalsIgnoreCase(op) && pageNo > 1) {
 			pageNo--;
-
 		} else if (OP_NEW.equalsIgnoreCase(op)) {
-
-			ServletUtility.redirect(ORSView.ORDER_CTL, request, response);
+			ServletUtility.redirect(ORSView.ITEM_CTL, request, response);
 			return;
 		} else if (OP_RESET.equalsIgnoreCase(op)) {
-			ServletUtility.redirect(ORSView.ORDER_LIST_CTL, request, response);
+			ServletUtility.redirect(ORSView.ITEM_LIST_CTL, request, response);
 			return;
-
 		} else if (OP_DELETE.equalsIgnoreCase(op)) {
 			pageNo = 1;
 			if (ids != null && ids.length > 0) {
-				OrderBean deletebean = new OrderBean();
+				ItemBean deletebean = new ItemBean();
 				for (String id : ids) {
 					deletebean.setId(DataUtility.getInt(id));
 					try {
 						model.delete(deletebean);
 					} catch (ApplicationException e) {
-
+						log.error(e);
 						ServletUtility.handleException(e, request, response);
 						return;
 					}
 
-					ServletUtility.setSuccessMessage("Order is Deleted Successfully", request);
+					ServletUtility.setSuccessMessage("Item is Deleted Successfully", request);
 				}
 			} else {
 				ServletUtility.setErrorMessage("Select at least one record", request);
@@ -155,7 +182,7 @@ public class OrderListCtl extends BaseCtl {
 			request.setAttribute("nextlist", nextList.size());
 
 		} catch (ApplicationException e) {
-
+			log.error(e);
 			ServletUtility.handleException(e, request, response);
 			return;
 		}
@@ -166,14 +193,14 @@ public class OrderListCtl extends BaseCtl {
 		ServletUtility.setBean(bean, request);
 		ServletUtility.setPageNo(pageNo, request);
 		ServletUtility.setPageSize(pageSize, request);
-
 		ServletUtility.forward(getView(), request, response);
+		log.debug("ItemListCtl doGet End");
 
 	}
 
 	@Override
 	protected String getView() {
-		return ORSView.ORDER_LIST_VIEW;
+		return ORSView.ITEM_LIST_VIEW;
 	}
 
 }

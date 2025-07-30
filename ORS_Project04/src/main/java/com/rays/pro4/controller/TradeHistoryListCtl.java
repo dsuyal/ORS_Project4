@@ -1,8 +1,11 @@
+
 package com.rays.pro4.controller;
 
 import java.io.IOException;
+import java.sql.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -11,49 +14,52 @@ import javax.servlet.http.HttpServletResponse;
 
 
 import com.rays.pro4.Bean.BaseBean;
-import com.rays.pro4.Bean.OrderBean;
+import com.rays.pro4.Bean.TradeHistoryBean;
 import com.rays.pro4.Exception.ApplicationException;
-import com.rays.pro4.Model.OrderModel;
+import com.rays.pro4.Model.TradeHistoryModel;
 import com.rays.pro4.Util.DataUtility;
 import com.rays.pro4.Util.PropertyReader;
 import com.rays.pro4.Util.ServletUtility;
 
-@WebServlet(name = "OrderListCtl", urlPatterns = { "/ctl/OrderListCtl" })
-public class OrderListCtl extends BaseCtl {
+@WebServlet(name = "TradeHistoryListCtl", urlPatterns = { "/ctl/TradeHistoryListCtl" })
+public class TradeHistoryListCtl extends BaseCtl {
+	
 	@Override
 	protected void preload(HttpServletRequest request) {
-		OrderModel model = new OrderModel();
+		
+		TradeHistoryModel model = new TradeHistoryModel();
+		Map<Integer, String> map = new HashMap();
 
-		HashMap map = new HashMap();
-		map.put("Mr.Amitabh", "Mr.Amitabh");
-		map.put("Miss.jaya", "Miss.jaya");
-		map.put("Mr.Govinda", "Mr.Govinda");
-		map.put("Mr.rajnikant", "Mr.rajnikant");
-		map.put("Mr.Mahesh", "Mr.Mahesh");
-
-		request.setAttribute("prolist", map);
+		map.put(1, "Buy");
+		map.put(2, "Sell");
+		map.put(3, "All ");
+		
+		request.setAttribute("cat", map);
 	}
 
 	@Override
-	protected BaseBean populateBean(HttpServletRequest request) {         
+	protected BaseBean populateBean(HttpServletRequest request) {
+		
+		TradeHistoryBean bean = new TradeHistoryBean();
 
-		OrderBean bean = new OrderBean();
 
 		bean.setId(DataUtility.getLong(request.getParameter("id")));
-		bean.setProductName(DataUtility.getString(request.getParameter("ProductName")));
-		bean.setDob(DataUtility.getDate(request.getParameter("Dob")));
 
-		System.out.println("quantity ===== > " + request.getParameter("Quantity"));
+		bean.setUserId(DataUtility.getString(request.getParameter("userId")));
 
-		bean.setQuantity(DataUtility.getLong(request.getParameter("Quantity")));
+		bean.setStartDate(DataUtility.getDate(request.getParameter("startDate")));
 
-		System.out.println("quantity bean ===== > " + bean.getQuantity());
+		System.out.println("dateeesss" + request.getParameter("startDate"));
 
-		bean.setCustomer(DataUtility.getString(request.getParameter("Customer")));
+		bean.setEndDate(DataUtility.getDate(request.getParameter("endDate")));
+		
+		System.out.println("date" + bean.getEndDate());
 
+		bean.setTransactionType(DataUtility.getString("transactionType"));
+		
+		
 		return bean;
 	}
-
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
@@ -63,11 +69,11 @@ public class OrderListCtl extends BaseCtl {
 
 		int pageNo = 1;
 		int pageSize = DataUtility.getInt(PropertyReader.getValue("page.size"));
-		OrderBean bean = (OrderBean) populateBean(request);
+		TradeHistoryBean bean = (TradeHistoryBean) populateBean(request);
 		String op = DataUtility.getString(request.getParameter("operation"));
-		System.out.println(">>>>>>>>>>>>>>>helooo" + bean.getDob());
+		//System.out.println(">>>>>>>>>>>>>>>helooo" + bean.getAppointmentDate());
 
-		OrderModel model = new OrderModel();
+		TradeHistoryModel model = new TradeHistoryModel();
 
 		try {
 			list = model.search(bean, pageNo, pageSize);
@@ -94,7 +100,7 @@ public class OrderListCtl extends BaseCtl {
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		System.out.println("PaymentListCtl doPost Start");
+		System.out.println("tradehistoryListCtl doPost Start");
 
 		List list;
 		List nextList = null;
@@ -105,11 +111,12 @@ public class OrderListCtl extends BaseCtl {
 		pageSize = (pageSize == 0) ? DataUtility.getInt(PropertyReader.getValue("page.size")) : pageSize;
 
 		String op = DataUtility.getString(request.getParameter("operation"));
-		
-		OrderBean bean = (OrderBean) populateBean(request);
+		TradeHistoryBean bean = (TradeHistoryBean) populateBean(request);
 
 		String[] ids = request.getParameterValues("ids");
-		OrderModel model = new OrderModel();
+		TradeHistoryModel model = new TradeHistoryModel();
+		
+		
 
 		if (OP_SEARCH.equalsIgnoreCase(op)) {
 			pageNo = 1;
@@ -120,16 +127,16 @@ public class OrderListCtl extends BaseCtl {
 
 		} else if (OP_NEW.equalsIgnoreCase(op)) {
 
-			ServletUtility.redirect(ORSView.ORDER_CTL, request, response);
+			ServletUtility.redirect(ORSView.TRADEHISTORY_CTL, request, response);
 			return;
 		} else if (OP_RESET.equalsIgnoreCase(op)) {
-			ServletUtility.redirect(ORSView.ORDER_LIST_CTL, request, response);
+			ServletUtility.redirect(ORSView.TRADEHISTORY_LIST_CTL, request, response);
 			return;
 
 		} else if (OP_DELETE.equalsIgnoreCase(op)) {
 			pageNo = 1;
 			if (ids != null && ids.length > 0) {
-				OrderBean deletebean = new OrderBean();
+				TradeHistoryBean deletebean = new TradeHistoryBean();
 				for (String id : ids) {
 					deletebean.setId(DataUtility.getInt(id));
 					try {
@@ -140,7 +147,7 @@ public class OrderListCtl extends BaseCtl {
 						return;
 					}
 
-					ServletUtility.setSuccessMessage("Order is Deleted Successfully", request);
+					ServletUtility.setSuccessMessage("Stock is Deleted Successfully", request);
 				}
 			} else {
 				ServletUtility.setErrorMessage("Select at least one record", request);
@@ -173,7 +180,7 @@ public class OrderListCtl extends BaseCtl {
 
 	@Override
 	protected String getView() {
-		return ORSView.ORDER_LIST_VIEW;
+		return ORSView.TRADEHISTORY_LIST_VIEW;
 	}
 
 }

@@ -21,6 +21,7 @@ public class DataUtility {
 
 	public static final String APP_TIME_FORMAT = "MM/dd/yyyy HH:mm:ss";
 
+
 	/**
 	 * Date formatter
 	 */
@@ -174,5 +175,24 @@ public class DataUtility {
 	public static void main(String[] args) {
 		System.out.println(getInt("124"));
 	}
+
+	/**
+	 * Converts String into Double
+	 *
+	 * @param val the input String
+	 * @return the double value, or 0.0 if the input is invalid
+	 */
+	public static double getDouble(String val) {
+	    if (val != null && !val.trim().isEmpty()) {
+	        try {
+	            return Double.parseDouble(val.trim());
+	        } catch (NumberFormatException e) {
+	            // Log the error or handle it appropriately
+	            System.err.println("Invalid double value: " + val);
+	        }
+	    }
+	    return 0.0;
+	}
+
 
 }

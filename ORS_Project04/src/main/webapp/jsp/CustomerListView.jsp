@@ -1,8 +1,9 @@
-<%@page import="com.rays.pro4.controller.OrderListCtl"%>
+<%@page import="com.rays.pro4.controller.CustomerListCtl"%>
 <%@page import="com.rays.pro4.Util.HTMLUtility"%>
 <%@page import="com.rays.pro4.Bean.CustomerBean"%>
 <%@page import="java.util.Iterator"%>
 <%@page import="java.util.List"%>
+<%@page import="java.util.Map"%>
 <%@page import="com.rays.pro4.Util.DataUtility"%>
 <%@page import="java.util.HashMap"%>
 <%@page import="com.rays.pro4.Util.ServletUtility"%>
@@ -12,51 +13,68 @@
 <html>
 <head>
 <meta charset="ISO-8859-1">
-<title>Order page</title>
+<title>Customer page</title>
 <script src="<%=ORSView.APP_CONTEXT%>/js/jquery.min.js"></script>
 <script src="<%=ORSView.APP_CONTEXT%>/js/Checkbox11.js"></script>
 
 </head>
 <link rel="stylesheet"
-	href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-<link rel="stylesheet" href="/resources/demos/style.css">
+href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<!-- <link rel="stylesheet" href="/resources/demos/style.css"> -->
 <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script src="<%=request.getContextPath()%>/js/Utilities.js"></script>
 <script>
-	$(function() {
-		$("#Udate").datepicker({
-			changeMonth : true,
-			changeYear : true,
-			yearRange : '1980:2002',
-		//dateFormat:'yy-mm-dd'
-		});
+$(function() {
+	$("#udatee").datepicker({
+		changeMonth : true,
+		changeYear : true,
+		yearRange : '2000:2025',
 	});
+});
 
-	function limitInputLength(input, maxLength) {
-		if (input.value.length > maxLength) {
-			input.value = input.value.slice(0, maxLength);
-		}
-	}
+function validatePhoneNumber(input, errorId, maxLength) {
+    let value = input.value;
+
+    let cleaned = value.replace(/\D/g, '');
+
+    if (value !== cleaned) {
+        document.getElementById(errorId).textContent = "Only numeric values allowed";
+    } else if (cleaned.length > maxLength) {
+        document.getElementById(errorId).textContent = "Maximum " + maxLength + " digits allowed";
+    } else {
+        document.getElementById(errorId).textContent = "";
+    }
+
+    input.value = cleaned.slice(0, maxLength);
+}
+
 </script>
 <body>
 	<jsp:useBean id="bean" class="com.rays.pro4.Bean.CustomerBean"
 		scope="request"></jsp:useBean>
 	<%@include file="Header.jsp"%>
-	<form action="<%=ORSView.ORDER_LIST_CTL%>" method="post">
+	<form action="<%=ORSView.CUSTOMER_LIST_CTL%>" method="post">
 		<center>
 
 			<div align="center">
-				<h1>Order List</h1>
+				<h1>Customer List</h1>
 				<h3>
 					<font color="red"><%=ServletUtility.getErrorMessage(request)%></font>
 					<font color="green"><%=ServletUtility.getSuccessMessage(request)%></font>
 				</h3>
 
 			</div>
+			
+			
 			<%
-				HashMap map = (HashMap) request.getAttribute("prolist");
+				List tlist = (List) request.getAttribute("isuue");
 
 				int next = DataUtility.getInt(request.getAttribute("nextlist").toString());
+			%>
+
+			<%
+				Map map = (Map) request.getAttribute("issue");
 			%>
 
 			<%
@@ -70,27 +88,51 @@
 			%>
 			<table width="100%" align="center">
 
-				<td align="center"><label>Name</font> :
-
-				</label> <input type="text" name="Name"
-					placeholder="Enter Name"
-					value="<%=ServletUtility.getParameter("Name", request)%>">
-				<td align="center"><label>Date</font> :
-				</label> <input type="text" name="DateOfBirth" id="Udate"
-					placeholder="Enter Date of birth" readonly="readonly"
-					value="<%=ServletUtility.getParameter("DateOfBirth", request)%>">
+				<td align="center"><label>Name</font> :</label> 
+				<input 
+   					 type="text" 
+   					 name="name"
+  				     id="nameInput"
+   					 placeholder="Enter name"
+  				     value="<%=ServletUtility.getParameter("name", request)%>"
+    				 oninput="handleAlphabetInput('nameInput', 'nameError', 20)" 
+    				 onblur="handleAlphabetInput('nameInput', 'nameError', 20)">
+					 <span style="color: red;" id="nameError"></span>
+					 	
+				<td align="center"><label>Location</font> :</label>
+				<input 
+   					 type="text" 
+   					 name="location"
+  				     id="locationInput"
+   					 placeholder="Enter location"
+  				     value="<%=ServletUtility.getParameter("location", request)%>"
+    				 oninput="handleAlphabetInput('locationInput', 'locationError', 20)" 
+    				 onblur="handleAlphabetInput('locationInput', 'locationError', 20)"
+					 >
+					 	<span style="color: red;" id="locationError"></span>
+					 	
+				<td align="center"><label>PhoneNumber:</label> 
+				 <input type="text" name="phoneNumber"
+           placeholder="Enter Phone Number"
+           value="<%=ServletUtility.getParameter("phoneNumber", request)%>"
+           oninput="validatePhoneNumber(this, 'phoneNumberError', 10)">
+			
+			<font color="red" id="phoneNumberError">
+        <%=ServletUtility.getErrorMessage("phoneNumber", request)%>
+    </font>		 
 					
-				<td align="center"><label>PhoneNumber:</label> <input
-					type="number" name="PhoneNumber" id="quantityInput"
-					placeholder="Enter PhoneNumber"
-					value="<%=ServletUtility.getParameter("PhoneNumber", request)%>"
-					oninput="limitInputLength(this, 15)"> <label>Gender</font>
+					
+					
+					 <label>Importance</font></label>
 						:
-				</label> <%=HTMLUtility.getList("Gender", String.valueOf(bean.getGender()), map)%>
+				 <%=HTMLUtility.getList2("importance", String.valueOf(bean.getImportance()), map)%>
 
 					<input type="submit" name="operation"
-					value="<%=OrderListCtl.OP_RESET%>"> <input type="submit"
-					name="operation" value="<%=OrderListCtl.OP_SEARCH%>"></td>
+					value="<%=CustomerListCtl.OP_RESET%>"> 
+					
+					<input type="submit"
+					name="operation" 
+					value="<%=CustomerListCtl.OP_SEARCH%>"></td>
 			</table>
 			<br>
 
@@ -99,14 +141,13 @@
 
 
 				<tr style= "background-color: lightblue" >
-					<th><input type="checkbox" id="select_all" name="select">Select
-						All</th>
-
+					<th><input type="checkbox" id="select_all" name="select">SelectAll</th>
+					
 					<th>S.No.</th>
 					<th>Name</th>
-					<th>Date Of Birth</th>
+					<th>Location</th>
 					<th>PhoneNumber</th>
-					<th>Gender</th>
+					<th>Importance</th>
 					<th>Edit</th>
 				</tr>
 				<%
@@ -119,9 +160,10 @@
 
 					<td><%=index++%></td>
 					<td><%=bean.getName()%></td>
-					<td><%=bean.getDateOfBirth()%></td>
+					<td><%=bean.getLocation()%></td>
 					<td><%=bean.getPhoneNumber()%></td>
-					<td><%=bean.getGender()%></td>
+					<td><%=map.get(bean.getImportance()) %></td>
+
 					<td><a href="CustomerCtl?id=<%=bean.getId()%>">Edit</td>
 				</tr>
 				<%
@@ -136,23 +178,23 @@
 							if (pageNo == 1) {
 						%>
 						<td><input type="submit" name="operation" disabled="disabled"
-							value="<%=OrderListCtl.OP_PREVIOUS%>"></td>
+							value="<%=CustomerListCtl.OP_PREVIOUS%>"></td>
 						<%
 							} else {
 						%>
 						<td><input type="submit" name="operation"
-							value="<%=OrderListCtl.OP_PREVIOUS%>"></td>
+							value="<%=CustomerListCtl.OP_PREVIOUS%>"></td>
 						<%
 							}
 						%>
 
 						<td><input type="submit" name="operation"
-							value="<%=OrderListCtl.OP_DELETE%>"></td>
+							value="<%=CustomerListCtl.OP_DELETE%>"></td>
 						<td align="center"><input type="submit" name="operation"
-							value="<%=OrderListCtl.OP_NEW%>"></td>
+							value="<%=CustomerListCtl.OP_NEW%>"></td>
 
 						<td align="right"><input type="submit" name="operation"
-							value="<%=OrderListCtl.OP_NEXT%>"
+							value="<%=CustomerListCtl.OP_NEXT%>"
 							<%=(list.size() < pageSize || next == 0) ? "disabled" : ""%>></td>
 
 
@@ -164,7 +206,7 @@
 					if (list.size() == 0) {
 				%>
 				<td align="center"><input type="submit" name="operation"
-					value="<%=OrderListCtl.OP_BACK%>"></td>
+					value="<%=CustomerListCtl.OP_BACK%>"></td>
 
 
 				<%
