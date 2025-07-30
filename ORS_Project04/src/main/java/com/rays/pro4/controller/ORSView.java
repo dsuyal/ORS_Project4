@@ -134,6 +134,11 @@ public interface ORSView {
 
 		public String ITEM_CTL = APP_CONTEXT + "/ctl/ItemCtl";
 		public String ITEM_LIST_CTL = APP_CONTEXT + "/ctl/ItemListCtl";
+
+		public String PORTFOLIO_CTL = APP_CONTEXT + "/ctl/PORTFOLIO_CTL";
+		public String PORTFOLIO_LIST_CTL = APP_CONTEXT + "/ctl/PORTFOLIO_LIST_CTL";
 		
+		public String STOCK_CTL = APP_CONTEXT + "/ctl/STOCK_CTL";
+		public String STOCK_LIST_CTL = APP_CONTEXT + "/ctl/STOCK_LIST_CTL";
 		
 }
